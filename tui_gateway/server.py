@@ -8789,6 +8789,9 @@ def _notification_poller_loop(
         try:
             _emit("message.start", sid)
             _run_prompt_submit(rid, sid, session, text)
+            if evt.get("type") == "async_delegation":
+                from tools.async_delegation import mark_completion_delivered
+                mark_completion_delivered(str(evt.get("delegation_id") or ""))
         except Exception as exc:
             print(
                 f"[tui_gateway] notification poller dispatch failed: "
@@ -8841,6 +8844,9 @@ def _notification_poller_loop(
         try:
             _emit("message.start", sid)
             _run_prompt_submit(rid, sid, session, text)
+            if evt.get("type") == "async_delegation":
+                from tools.async_delegation import mark_completion_delivered
+                mark_completion_delivered(str(evt.get("delegation_id") or ""))
         except Exception as exc:
             print(
                 f"[tui_gateway] notification poller dispatch failed: "
@@ -9394,6 +9400,9 @@ def _run_prompt_submit(rid, sid: str, session: dict, text: Any) -> None:
                 try:
                     _emit("message.start", sid)
                     _run_prompt_submit(rid, sid, session, synth)
+                    if _evt.get("type") == "async_delegation":
+                        from tools.async_delegation import mark_completion_delivered
+                        mark_completion_delivered(str(_evt.get("delegation_id") or ""))
                 except Exception as _n_exc:
                     print(
                         f"[tui_gateway] completion notification dispatch failed: "
